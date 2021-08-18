@@ -1,0 +1,2384 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{ExercicioComputacionalParte2}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    UFMG PROGRAMA DE PÓS-GRADUAÇÃO EM ENGENHARIA ELÉTRICA SISTEMAS NEBULOSOS
+PROF. WALMIR MATOS CAMINHAS
+
+\# Exercício Computacional: Parte 2
+
+Aluno: Hélder Seixas Lima Belo Horizonte, agosto de 2021.
+
+\hypertarget{informauxe7uxf5es-sobre-a-implementauxe7uxe3o}{%
+\section{Informações sobre a
+implementação}\label{informauxe7uxf5es-sobre-a-implementauxe7uxe3o}}
+
+As estruturas ANFIS e NFN foram implementadas em Python 3 utilizando
+Jupyter Notebook. Live Script também foram criados no MATLAB para
+executar as estruturas GENFIS e ANFIS disponíveis nessa ferramenta. Os
+códigos implementados estão anexados no final deste relatório e também
+no Moodle juntamente com os dados utilizados.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{math}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{dates} \PY{k}{as} \PY{n+nn}{mdates}
+\PY{k+kn}{import} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{io}
+\PY{k+kn}{from} \PY{n+nn}{neuro\PYZus{}fuzzy}\PY{n+nn}{.}\PY{n+nn}{anfis} \PY{k+kn}{import} \PY{n}{ANFIS}
+\PY{k+kn}{from} \PY{n+nn}{neuro\PYZus{}fuzzy}\PY{n+nn}{.}\PY{n+nn}{nfn} \PY{k+kn}{import} \PY{n}{NFN}
+\PY{k+kn}{from} \PY{n+nn}{neuro\PYZus{}fuzzy}\PY{n+nn}{.}\PY{n+nn}{util} \PY{k+kn}{import} \PY{n}{normalizar}\PY{p}{,} \PY{n}{embaralhar\PYZus{}dados}\PY{p}{,} \PY{n}{exibir\PYZus{}resultado\PYZus{}desejado}\PY{p}{,} \PY{n}{atrasar}\PY{p}{,} \PY{n}{avancar}\PY{p}{,} \PY{n}{ajustar}\PY{p}{,} \PYZbs{}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{,} \PY{n}{desnormalizar}
+
+
+\PY{k}{def} \PY{n+nf}{descrever\PYZus{}dados}\PY{p}{(}\PY{n}{xt}\PY{p}{,} \PY{n}{yt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{yv}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{===Dataset xt===}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{xt}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}\PY{p}{)}\PY{p}{;}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{===Dataset yt===}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{yt}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}\PY{p}{)}\PY{p}{;}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{===Dataset xv===}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{xv}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}\PY{p}{)}\PY{p}{;}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{===Dataset yv===}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{;}
+    \PY{n+nb}{print}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{yv}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}\PY{p}{)}\PY{p}{;}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{anuxe1lise-da-complexidade-computacional-dos-sistemas-de-inferuxeancia-fuzzy}{%
+\subsection{Análise da complexidade computacional dos Sistemas de
+Inferência
+Fuzzy}\label{anuxe1lise-da-complexidade-computacional-dos-sistemas-de-inferuxeancia-fuzzy}}
+
+Nesta seção serão analisados os comportamentos assintóticos dos
+algoritmos Adaptive Neuro-Fuzzy inference System (ANFIS) e
+Neo-Fyzzy-Neuron (NFN) considerando como operação relevante a execução
+de uma inferência nessas estruturas.
+
+O ANFIS possui \(f(n, m) = \mathcal{O}(n * m)\), onde \(n\) é o número
+de entradas do sistema e \(m\) é o número de regras do sistema.
+
+Como no NFN o número de regras não interfere no tempo de exceução da
+estrutura, dado que a cada inferência no máximo apenas 2 funções de
+pertinências são computadas, temos que para o NFN a
+\(f(n) = \mathcal{O}(n)\). Por ter tempo de execução menor, o NFN pode
+ser interessante para contextos de aplciações em tempo real e em
+treinamento on-line.
+
+Cabe destacar que tanto no ANFIS e no NFN o processo de aprendizagem
+também considera o número de épocas de treino (\(e\)) e o número de
+pontos de treino (\(t\)). Assim, temos que a complexidade do processo de
+aprendizagem do ANFIS e NFN é
+\(f(e, t, n, m) = \mathcal{O}(e * t * n * m)\) e
+\(f(e, t, n) = \mathcal{O}(e * t * n)\), respectivamente.
+
+O MatLab disponibiliza os métodos Grid Partition, Subtractive Clustering
+e FCM Clustering com intuito de otimizar a inicialização de funções de
+pertinência e regras para estruturas ANFIS.
+
+O método Grid Partition gera funções de pertinência particionando
+uniformemente os intervalos das variáveis de entrada. É criada uma regra
+para cada combinação de função de pertinência e entrada. Assim, o número
+de regras corresponde a \(m = p^{n}\), onde \(p\) é o número de funções
+de pertinência por entrada. Desta forma o custo de sistema ANFIS
+inicializado com este método é \(f(n, p) = \mathcal{O}(p^{n})\),
+tornando esta solução cara para problemas com muitas entradas.
+
+O método Subtractive Clustering gera um sistema usando funções de
+pertinência e regras derivadas de clusters de dados encontrados a partir
+de algoritmo agrupamento subtrativo considerando dados de entrada e
+saída. O número de funções de pertinências por entrada e número de
+regras corresponde ao número de clusters encontrados pelo algoritmo.
+Segundo Chiu (1994), o custo do algoritmo é
+\(f(t) = \mathcal{O}(t^{2})\).
+
+O método FCM Clustering gera um sistema usando funções de pertinência e
+regras derivadas de clusters de dados encontrados usando algoritimo de
+agrupamento FCM a partir de dados de entrada e saída. O número de
+funções de pertinências por entrada e número de regras corresponde ao
+número de clusters, sendo que o número de clusters é definido por
+parâmetro. Segundo Ghosh e Dubey (2013), o custo do algoritmo é
+\(f(t, n, c, i) = \mathcal{O}(t * n * c^{2} * i)\), onde \(c\) é o
+número de clusters e \(i\) é o número de iterações do algoritmo.
+
+    \hypertarget{problema-1-modelagem-de-sistema-estuxe1tico-monovariuxe1vel}{%
+\subsection{Problema 1: (modelagem de sistema estático
+monovariável)}\label{problema-1-modelagem-de-sistema-estuxe1tico-monovariuxe1vel}}
+
+Aproximar a função \(y=x^2\).
+
+    \hypertarget{carregar-dados-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Carregar dados de treino e
+validação}\label{carregar-dados-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{xt} \PY{o}{=} \PY{n}{scipy}\PY{o}{.}\PY{n}{io}\PY{o}{.}\PY{n}{loadmat}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xte1.mat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xte1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{ydt} \PY{o}{=} \PY{n}{scipy}\PY{o}{.}\PY{n}{io}\PY{o}{.}\PY{n}{loadmat}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydte1.mat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydte1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n}{xv} \PY{o}{=} \PY{n}{scipy}\PY{o}{.}\PY{n}{io}\PY{o}{.}\PY{n}{loadmat}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xve1.mat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xve1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{ydv} \PY{o}{=} \PY{n}{scipy}\PY{o}{.}\PY{n}{io}\PY{o}{.}\PY{n}{loadmat}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydve1.mat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydve1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{resultado-desejado}{%
+\subsubsection{Resultado desejado}\label{resultado-desejado}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{label\PYZus{}y\PYZus{}validacao} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x²}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{exibir\PYZus{}resultado\PYZus{}desejado}\PY{p}{(}\PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_7_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{resumo-dos-dados-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Resumo dos dados de treino e
+validação}\label{resumo-dos-dados-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{descrever\PYZus{}dados}\PY{p}{(}\PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+===Dataset xt===
+            0
+0    0.151927
+1   -1.305227
+2   -1.964813
+3   -0.095791
+4   -1.701748
+..        {\ldots}
+495  0.899214
+496  1.975956
+497 -1.207648
+498  0.010367
+499 -0.151371
+
+[500 rows x 1 columns]
+
+===Dataset yt===
+            0
+0    0.023082
+1    1.703617
+2    3.860489
+3    0.009176
+4    2.895945
+..        {\ldots}
+495  0.808586
+496  3.904403
+497  1.458413
+498  0.000107
+499  0.022913
+
+[500 rows x 1 columns]
+
+===Dataset xv===
+          0
+0    -2.000
+1    -1.999
+2    -1.998
+3    -1.997
+4    -1.996
+{\ldots}     {\ldots}
+3996  1.996
+3997  1.997
+3998  1.998
+3999  1.999
+4000  2.000
+
+[4001 rows x 1 columns]
+
+===Dataset yv===
+             0
+0     4.000000
+1     3.996001
+2     3.992004
+3     3.988009
+4     3.984016
+{\ldots}        {\ldots}
+3996  3.984016
+3997  3.988009
+3998  3.992004
+3999  3.996001
+4000  4.000000
+
+[4001 rows x 1 columns]
+    \end{Verbatim}
+
+    \hypertarget{estruturas-implementadas}{%
+\subsubsection{Estruturas
+implementadas}\label{estruturas-implementadas}}
+
+\hypertarget{paruxe2metros-gerais}{%
+\paragraph{Parâmetros gerais}\label{paruxe2metros-gerais}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{n\PYZus{}epoca} \PY{o}{=} \PY{l+m+mi}{20}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{estrutura-anfis}{%
+\paragraph{Estrutura ANFIS}\label{estrutura-anfis}}
+
+Parâmetros
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m} \PY{o}{=} \PY{l+m+mi}{4}
+\PY{n}{alfa} \PY{o}{=} \PY{l+m+mf}{0.3}
+\PY{n}{anfis\PYZus{}problema\PYZus{}1} \PY{o}{=} \PY{n}{ANFIS}\PY{p}{(}\PY{n}{n\PYZus{}epoca}\PY{p}{,} \PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{m}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{,} \PY{n}{alfa}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Demonstração de estado inicial
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}1}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_15_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  1.6713
+Mean absolute percentage error (MAPE): 39212.5888\%
+    \end{Verbatim}
+
+    Demonstração de treinamento
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}1}\PY{o}{.}\PY{n}{treinar\PYZus{}gradiente}\PY{p}{(}\PY{n}{plota\PYZus{}resultado\PYZus{}epocas}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_17_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_17_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Demonstração de resultado final
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}1}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_19_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  0.0049
+Mean absolute percentage error (MAPE): 264.5898\%
+    \end{Verbatim}
+
+    Resultado médio para 10 treinos
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}1}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao\PYZus{}multiplos\PYZus{}treinos}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_21_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do RMSE:  0.0225
+Desvio padrão do RMSE:  0.0109
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_21_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do MAPE: 449.4414\%
+Desvio padrão do MAPE: 251.8057\%
+    \end{Verbatim}
+
+    \hypertarget{estrutura-nfn}{%
+\paragraph{Estrutura NFN}\label{estrutura-nfn}}
+
+Parâmetros
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m} \PY{o}{=} \PY{l+m+mi}{120}
+\PY{n}{alfa} \PY{o}{=} \PY{l+m+mf}{0.8}
+\PY{n}{nfn\PYZus{}problema\PYZus{}1} \PY{o}{=} \PY{n}{NFN}\PY{p}{(}\PY{n}{n\PYZus{}epoca}\PY{p}{,} \PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{m}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{,} \PY{n}{alfa}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Demonstração de estado inicial
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}1}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_25_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  1.9177
+Mean absolute percentage error (MAPE): 49810.0775\%
+    \end{Verbatim}
+
+    Demonstração de treinamento
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}1}\PY{o}{.}\PY{n}{treinar\PYZus{}gradiente}\PY{p}{(}\PY{n}{plota\PYZus{}resultado\PYZus{}epocas}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_27_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_27_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Demonstração de resultado final
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}1}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_29_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  0.0004
+Mean absolute percentage error (MAPE): 7.9826\%
+    \end{Verbatim}
+
+    Resultado médio para 10 treinos
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}1}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao\PYZus{}multiplos\PYZus{}treinos}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_31_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do RMSE:  0.0004
+Desvio padrão do RMSE:  0.0
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_31_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do MAPE: 7.9822\%
+Desvio padrão do MAPE: 0.0019\%
+    \end{Verbatim}
+
+    \hypertarget{problema-2-exemplo-2-do-livro-texto-modelagem-de-sistema-estuxe1tico-multivariuxe1vel}{%
+\subsection{Problema 2: Exemplo 2 do livro texto (modelagem de sistema
+estático
+multivariável)}\label{problema-2-exemplo-2-do-livro-texto-modelagem-de-sistema-estuxe1tico-multivariuxe1vel}}
+
+Aproximar a função
+\(f(x, y, z) = 1 + x_{1}^{0,5} + x_{2}^{-1} + x_{3}^{1,5}\).
+
+    \hypertarget{carregamento-dos-dados-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Carregamento dos dados de treino e
+validação}\label{carregamento-dos-dados-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{xt} \PY{o}{=} \PY{n}{scipy}\PY{o}{.}\PY{n}{io}\PY{o}{.}\PY{n}{loadmat}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xte2.mat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xte2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{ydt} \PY{o}{=} \PY{n}{scipy}\PY{o}{.}\PY{n}{io}\PY{o}{.}\PY{n}{loadmat}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydte2.mat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydte2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{xv} \PY{o}{=} \PY{n}{scipy}\PY{o}{.}\PY{n}{io}\PY{o}{.}\PY{n}{loadmat}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xve2.mat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xve2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{ydv} \PY{o}{=} \PY{n}{scipy}\PY{o}{.}\PY{n}{io}\PY{o}{.}\PY{n}{loadmat}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydve2.mat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydve2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{resultado-desejado}{%
+\subsubsection{Resultado desejado}\label{resultado-desejado}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{label\PYZus{}y\PYZus{}validacao} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdl{}1 + x\PYZus{}}\PY{l+s+si}{\PYZob{}1\PYZcb{}}\PY{l+s+s2}{\PYZca{}}\PY{l+s+s2}{\PYZob{}}\PY{l+s+s2}{0,5\PYZcb{} + x\PYZus{}}\PY{l+s+si}{\PYZob{}2\PYZcb{}}\PY{l+s+s2}{\PYZca{}}\PY{l+s+s2}{\PYZob{}}\PY{l+s+s2}{\PYZhy{}1\PYZcb{} + x\PYZus{}}\PY{l+s+si}{\PYZob{}3\PYZcb{}}\PY{l+s+s2}{\PYZca{}}\PY{l+s+s2}{\PYZob{}}\PY{l+s+s2}{1,5\PYZcb{}\PYZdl{}}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{exibir\PYZus{}resultado\PYZus{}desejado}\PY{p}{(}\PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_36_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{resumo-dos-dados-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Resumo dos dados de treino e
+validação}\label{resumo-dos-dados-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{descrever\PYZus{}dados}\PY{p}{(}\PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+===Dataset xt===
+     0  1  2
+0    4  3  4
+1    3  5  2
+2    2  3  3
+3    2  2  2
+4    6  6  2
+..  .. .. ..
+211  5  4  4
+212  2  1  1
+213  2  5  3
+214  3  6  3
+215  2  5  6
+
+[216 rows x 3 columns]
+
+===Dataset yt===
+             0
+0    11.960069
+1    10.795195
+2     8.643582
+3    10.678301
+4    15.758596
+..         {\ldots}
+211  13.039812
+212  19.485281
+213   7.877361
+214   9.555317
+215   7.194492
+
+[216 rows x 1 columns]
+
+===Dataset xv===
+       0    1    2
+0    1.5  1.5  1.5
+1    1.5  1.5  2.5
+2    1.5  1.5  3.5
+3    1.5  1.5  4.5
+4    1.5  1.5  5.5
+..   {\ldots}  {\ldots}  {\ldots}
+120  5.5  5.5  1.5
+121  5.5  5.5  2.5
+122  5.5  5.5  3.5
+123  5.5  5.5  4.5
+124  5.5  5.5  5.5
+
+[125 rows x 3 columns]
+
+===Dataset yv===
+             0
+0    11.804327
+1     9.887212
+2     9.266741
+3     8.977023
+4     8.814599
+..         {\ldots}
+120  16.575949
+121  14.288463
+122  13.540536
+123  13.189845
+124  12.992807
+
+[125 rows x 1 columns]
+    \end{Verbatim}
+
+    \hypertarget{estruturas-implementadas}{%
+\subsubsection{Estruturas
+implementadas}\label{estruturas-implementadas}}
+
+\hypertarget{paruxe2metros-gerais}{%
+\paragraph{Parâmetros gerais}\label{paruxe2metros-gerais}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{n\PYZus{}epoca} \PY{o}{=} \PY{l+m+mi}{20}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{estrutura-anfis}{%
+\paragraph{Estrutura ANFIS}\label{estrutura-anfis}}
+
+Parâmetros
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m} \PY{o}{=} \PY{l+m+mi}{5}
+\PY{n}{alfa} \PY{o}{=} \PY{l+m+mf}{0.01}
+\PY{n}{anfis\PYZus{}problema\PYZus{}2} \PY{o}{=} \PY{n}{ANFIS}\PY{p}{(}\PY{n}{n\PYZus{}epoca}\PY{p}{,} \PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{m}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{,} \PY{n}{alfa}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Demonstração de estado inicial
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}2}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_44_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  7.1365
+Mean absolute percentage error (MAPE): 50.0936\%
+    \end{Verbatim}
+
+    Demonstração de treinamento
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}2}\PY{o}{.}\PY{n}{treinar\PYZus{}gradiente}\PY{p}{(}\PY{n}{plota\PYZus{}resultado\PYZus{}epocas}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_46_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_46_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Demonstração de resultado final
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{23}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}2}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_48_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  1.1496
+Mean absolute percentage error (MAPE): 5.5745\%
+    \end{Verbatim}
+
+    Resultado médio para 10 treinos
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{24}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}2}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao\PYZus{}multiplos\PYZus{}treinos}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_50_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do RMSE:  1.0061
+Desvio padrão do RMSE:  0.1315
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_50_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do MAPE: 5.5908\%
+Desvio padrão do MAPE: 0.6504\%
+    \end{Verbatim}
+
+    \hypertarget{estrutura-nfn}{%
+\paragraph{Estrutura NFN}\label{estrutura-nfn}}
+
+Parâmetros
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m} \PY{o}{=} \PY{l+m+mi}{5}
+\PY{n}{alfa} \PY{o}{=} \PY{l+m+mf}{0.01}
+\PY{n}{nfn\PYZus{}problema\PYZus{}2} \PY{o}{=} \PY{n}{NFN}\PY{p}{(}\PY{n}{n\PYZus{}epoca}\PY{p}{,} \PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{m}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{,} \PY{n}{alfa}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Demonstração de estado inicial
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{26}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}2}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_54_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  4.1896
+Mean absolute percentage error (MAPE): 28.6446\%
+    \end{Verbatim}
+
+    Demonstração de treinamento
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}2}\PY{o}{.}\PY{n}{treinar\PYZus{}gradiente}\PY{p}{(}\PY{n}{plota\PYZus{}resultado\PYZus{}epocas}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_56_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_56_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Demonstração de resultado final
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}2}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_58_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  0.7369
+Mean absolute percentage error (MAPE): 5.1652\%
+    \end{Verbatim}
+
+    Resultado médio para 10 treinos
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}2}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao\PYZus{}multiplos\PYZus{}treinos}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_60_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do RMSE:  0.7341
+Desvio padrão do RMSE:  0.0018
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_60_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do MAPE: 5.1261\%
+Desvio padrão do MAPE: 0.0310\%
+    \end{Verbatim}
+
+    \hypertarget{problema-3-modelo-de-sistema-dinuxe2mico}{%
+\subsection{Problema 3: Modelo de sistema
+dinâmico}\label{problema-3-modelo-de-sistema-dinuxe2mico}}
+
+Considere o sistema dinâmico descrito por:
+\(y(k+1) = g[y(k), y(k-1), y(k-2), u(k), u(k-1)]\), onde
+\(g(x_{1}, x_{2}, x_{3}, x_{4}, x_{5}) = \frac{x_{1}x_{2}x_{3}x_{5}(x_{3}-1)+x_{4}}{1+x_{3}^2+x_{4}^2}\)
+e
+\(u(k) = \{\begin{array}{ll}sen(2\Pi k/250), \forall k \leq 500 \\0.8sen(2\Pi k/250) + 0.2sen(2\Pi k/25), \forall k > 500 \end{array}\)
+
+\(\therefore \hat{y}(k+1) = \hat{g}[\hat{y}(k), \hat{y}(k-1), \hat{y}(k-2), u(k), u(k-1)]\)
+
+\begin{itemize}
+\tightlist
+\item
+  Estrutura da rede neurofuzzy
+
+  \begin{itemize}
+  \tightlist
+  \item
+    cinco entradas \(y(k), y(k-1), y(k-2), u(k), u(k-1)\)
+  \item
+    uma saída \(y(k+1) = \hat{g}[\cdot ]\)
+  \end{itemize}
+\item
+  Metodologia de treinamento sugerida
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Utilizar cinco mil padrões com \(u(k)\) gerado aleatoriamente no
+    intervalo \([-1,1]\).
+  \end{itemize}
+\end{itemize}
+
+    \hypertarget{criauxe7uxe3o-dos-arquivos-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Criação dos arquivos de treino e
+validação}\label{criauxe7uxe3o-dos-arquivos-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{problema\PYZus{}3\PYZus{}calcular\PYZus{}g}\PY{p}{(}\PY{n}{x1}\PY{p}{,} \PY{n}{x2}\PY{p}{,} \PY{n}{x3}\PY{p}{,} \PY{n}{x4}\PY{p}{,} \PY{n}{x5}\PY{p}{)}\PY{p}{:}
+    \PY{n}{g} \PY{o}{=} \PY{p}{(}\PY{n}{x1} \PY{o}{*} \PY{n}{x2} \PY{o}{*} \PY{n}{x3} \PY{o}{*} \PY{n}{x5} \PY{o}{*} \PY{p}{(}\PY{n}{x3} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{+} \PY{n}{x4}\PY{p}{)} \PY{o}{/} \PY{p}{(}\PY{l+m+mi}{1} \PY{o}{+} \PY{n}{x3} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2} \PY{o}{+} \PY{n}{x4} \PY{o}{*}\PY{o}{*} \PY{l+m+mi}{2}\PY{p}{)}
+    \PY{k}{return} \PY{n}{g}
+
+
+\PY{k}{def} \PY{n+nf}{problema\PYZus{}3\PYZus{}calcular\PYZus{}u}\PY{p}{(}\PY{n}{k}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{k} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{:}
+        \PY{k}{return} \PY{l+m+mi}{0}
+    \PY{k}{elif} \PY{n}{k} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mi}{500}\PY{p}{:}
+        \PY{k}{return} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{math}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{k}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{250}\PY{p}{)}
+    \PY{k}{else}\PY{p}{:}
+        \PY{k}{return} \PY{l+m+mf}{0.8} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{math}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{k}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{250}\PY{p}{)} \PY{o}{+} \PY{l+m+mf}{0.2} \PY{o}{*} \PY{n}{np}\PY{o}{.}\PY{n}{sin}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{math}\PY{o}{.}\PY{n}{pi} \PY{o}{*} \PY{n}{k}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{25}\PY{p}{)}
+
+
+\PY{k}{def} \PY{n+nf}{problema\PYZus{}3\PYZus{}calcular\PYZus{}y}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{yd}\PY{p}{)}\PY{p}{:}
+    \PY{k}{if} \PY{n}{k} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{:}
+        \PY{k}{return} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}
+    \PY{k}{elif} \PY{n}{k} \PY{o}{\PYZlt{}} \PY{n+nb}{len}\PY{p}{(}\PY{n}{yd}\PY{p}{)}\PY{p}{:}
+        \PY{k}{return} \PY{n}{yd}\PY{p}{[}\PY{n}{k}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{[}\PY{n}{k}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{[}\PY{n}{k}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{[}\PY{n}{k}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{[}\PY{n}{k}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,} \PY{n}{x}\PY{p}{[}\PY{n}{k}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{]}
+    \PY{k}{else}\PY{p}{:}
+        \PY{n}{x1}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}} \PY{o}{=} \PY{n}{problema\PYZus{}3\PYZus{}calcular\PYZus{}y}\PY{p}{(}\PY{n}{k} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{yd}\PY{p}{)}
+        \PY{n}{x2}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}} \PY{o}{=} \PY{n}{problema\PYZus{}3\PYZus{}calcular\PYZus{}y}\PY{p}{(}\PY{n}{k} \PY{o}{\PYZhy{}} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{yd}\PY{p}{)}
+        \PY{n}{x3}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}} \PY{o}{=} \PY{n}{problema\PYZus{}3\PYZus{}calcular\PYZus{}y}\PY{p}{(}\PY{n}{k} \PY{o}{\PYZhy{}} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{x}\PY{p}{,} \PY{n}{yd}\PY{p}{)}
+        \PY{n}{x4} \PY{o}{=} \PY{n}{problema\PYZus{}3\PYZus{}calcular\PYZus{}u}\PY{p}{(}\PY{n}{k} \PY{o}{\PYZhy{}} \PY{l+m+mi}{1}\PY{p}{)}
+        \PY{n}{x5} \PY{o}{=} \PY{n}{problema\PYZus{}3\PYZus{}calcular\PYZus{}u}\PY{p}{(}\PY{n}{k} \PY{o}{\PYZhy{}} \PY{l+m+mi}{2}\PY{p}{)}
+        \PY{n}{y} \PY{o}{=} \PY{n}{problema\PYZus{}3\PYZus{}calcular\PYZus{}g}\PY{p}{(}\PY{n}{x1}\PY{p}{,} \PY{n}{x2}\PY{p}{,} \PY{n}{x3}\PY{p}{,} \PY{n}{x4}\PY{p}{,} \PY{n}{x5}\PY{p}{)}
+        \PY{k}{return} \PY{n}{y}\PY{p}{,} \PY{n}{x1}\PY{p}{,} \PY{n}{x2}\PY{p}{,} \PY{n}{x3}\PY{p}{,} \PY{n}{x4}\PY{p}{,} \PY{n}{x5}
+
+
+\PY{k}{def} \PY{n+nf}{problema\PYZus{}3\PYZus{}criar\PYZus{}arquivos}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n}{xt} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{n}{ydt} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{5001}\PY{p}{)}\PY{p}{:}
+        \PY{n}{y}\PY{p}{,} \PY{n}{x1}\PY{p}{,} \PY{n}{x2}\PY{p}{,} \PY{n}{x3}\PY{p}{,} \PY{n}{x4}\PY{p}{,} \PY{n}{x5} \PY{o}{=} \PY{n}{problema\PYZus{}3\PYZus{}calcular\PYZus{}y}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{)}
+        \PY{n}{xt}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{p}{[}\PY{n}{x1}\PY{p}{,} \PY{n}{x2}\PY{p}{,} \PY{n}{x3}\PY{p}{,} \PY{n}{x4}\PY{p}{,} \PY{n}{x5}\PY{p}{]}\PY{p}{)}
+        \PY{n}{ydt}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{p}{[}\PY{n}{y}\PY{p}{]}\PY{p}{)}
+    \PY{n}{xt}\PY{p}{,} \PY{n}{ydt} \PY{o}{=} \PY{n}{embaralhar\PYZus{}dados}\PY{p}{(}\PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xte3.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{xt}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydte3.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ydt}\PY{p}{)}
+
+    \PY{n}{xv} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{n}{ydv} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{10001}\PY{p}{)}\PY{p}{:}
+        \PY{n}{y}\PY{p}{,} \PY{n}{x1}\PY{p}{,} \PY{n}{x2}\PY{p}{,} \PY{n}{x3}\PY{p}{,} \PY{n}{x4}\PY{p}{,} \PY{n}{x5} \PY{o}{=} \PY{n}{problema\PYZus{}3\PYZus{}calcular\PYZus{}y}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{)}
+        \PY{n}{xv}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{p}{[}\PY{n}{x1}\PY{p}{,} \PY{n}{x2}\PY{p}{,} \PY{n}{x3}\PY{p}{,} \PY{n}{x4}\PY{p}{,} \PY{n}{x5}\PY{p}{]}\PY{p}{)}
+        \PY{n}{ydv}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{p}{[}\PY{n}{y}\PY{p}{]}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xve3.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{xv}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydve3.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ydv}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{carregamento-dos-dados-de-treino-e-validauxe7uxe3o}{%
+\paragraph{Carregamento dos dados de treino e
+validação}\label{carregamento-dos-dados-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{xt} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xte3.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{values}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{ydt} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydte3.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{xv} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xve3.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{values}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{ydv} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydve3.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{resultado-desejado}{%
+\paragraph{Resultado desejado}\label{resultado-desejado}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{label\PYZus{}y\PYZus{}validacao} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdl{}y(k+1) = g[y(k), y(k\PYZhy{}1), y(k\PYZhy{}2), u(k), u(k\PYZhy{}1)]\PYZdl{}}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{exibir\PYZus{}resultado\PYZus{}desejado}\PY{p}{(}\PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_67_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{resumo-dos-dados-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Resumo dos dados de treino e
+validação}\label{resumo-dos-dados-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{descrever\PYZus{}dados}\PY{p}{(}\PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+===Dataset xt===
+             0         1         2         3         4
+0    -0.446678 -0.435928 -0.429134 -0.680864 -0.642804
+1     0.021002  0.055787  0.078425 -0.025314  0.021197
+2    -0.178104 -0.208557 -0.245899 -0.168059 -0.195192
+3    -0.287780 -0.331321 -0.373264 -0.283230 -0.340765
+4     0.244241  0.227010  0.208546  0.297042  0.272952
+{\ldots}        {\ldots}       {\ldots}       {\ldots}       {\ldots}       {\ldots}
+4995  0.383368  0.379683  0.379485  0.612949  0.595618
+4996 -0.374514 -0.345878 -0.307980 -0.512466 -0.467202
+4997  0.293578  0.287271  0.287305  0.380735  0.363944
+4998  0.434077  0.434982  0.435461  0.951010  0.975854
+4999  0.432227  0.428600  0.422905  0.914215  0.868656
+
+[5000 rows x 5 columns]
+
+===Dataset yt===
+             0
+0    -0.459800
+1    -0.025145
+2    -0.156405
+3    -0.245899
+4     0.260261
+{\ldots}        {\ldots}
+4995  0.389898
+4996 -0.395474
+4997  0.305050
+4998  0.432518
+4999  0.434292
+
+[5000 rows x 1 columns]
+
+===Dataset xv===
+             0         1         2         3         4
+0     0.000000  0.000000  0.000000  0.000000  0.000000
+1     0.000000  0.000000  0.000000  0.025130  0.000000
+2     0.025114  0.000000  0.000000  0.050244  0.025130
+3     0.050118  0.025114  0.000000  0.075327  0.050244
+4     0.074902  0.050118  0.025114  0.100362  0.075327
+{\ldots}        {\ldots}       {\ldots}       {\ldots}       {\ldots}       {\ldots}
+9995 -0.278551 -0.291155 -0.295093 -0.290478 -0.319786
+9996 -0.256424 -0.278551 -0.291155 -0.249155 -0.290478
+9997 -0.224053 -0.256424 -0.278551 -0.197171 -0.249155
+9998 -0.181169 -0.224053 -0.256424 -0.136546 -0.197171
+9999 -0.128297 -0.181169 -0.224053 -0.069842 -0.136546
+
+[10000 rows x 5 columns]
+
+===Dataset yv===
+             0
+0     0.000000
+1     0.025114
+2     0.050118
+3     0.074902
+4     0.099292
+{\ldots}        {\ldots}
+9995 -0.256424
+9996 -0.224053
+9997 -0.181169
+9998 -0.128297
+9999 -0.067021
+
+[10000 rows x 1 columns]
+    \end{Verbatim}
+
+    \hypertarget{estruturas-implementadas}{%
+\subsubsection{Estruturas
+implementadas}\label{estruturas-implementadas}}
+
+    \hypertarget{paruxe2metros-gerais}{%
+\paragraph{Parâmetros gerais}\label{paruxe2metros-gerais}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{n\PYZus{}epoca} \PY{o}{=} \PY{l+m+mi}{20}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{estrutura-anfis}{%
+\paragraph{Estrutura ANFIS}\label{estrutura-anfis}}
+
+Parâmetro
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m} \PY{o}{=} \PY{l+m+mi}{5}
+\PY{n}{alfa} \PY{o}{=} \PY{l+m+mf}{0.2}
+\PY{n}{anfis\PYZus{}problema\PYZus{}3} \PY{o}{=} \PY{n}{ANFIS}\PY{p}{(}\PY{n}{n\PYZus{}epoca}\PY{p}{,} \PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{m}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{,} \PY{n}{alfa}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Demonstração de estado inicial
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}3}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_76_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  0.7277
+Mean absolute percentage error (MAPE): 71679.5019\%
+    \end{Verbatim}
+
+    Demonstração de treinamento
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}3}\PY{o}{.}\PY{n}{treinar\PYZus{}gradiente}\PY{p}{(}\PY{n}{plota\PYZus{}resultado\PYZus{}epocas}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_78_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_78_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Demonstração de resultado final
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}3}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_80_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  0.0026
+Mean absolute percentage error (MAPE): 174.8272\%
+    \end{Verbatim}
+
+    Resultado médio para 10 treinos
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}3}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao\PYZus{}multiplos\PYZus{}treinos}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_82_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do RMSE:  0.0058
+Desvio padrão do RMSE:  0.0024
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_82_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do MAPE: 430.1932\%
+Desvio padrão do MAPE: 276.0701\%
+    \end{Verbatim}
+
+    \hypertarget{estrutura-nfn}{%
+\paragraph{Estrutura NFN}\label{estrutura-nfn}}
+
+Parâmetro
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m} \PY{o}{=} \PY{l+m+mi}{100}
+\PY{n}{alfa} \PY{o}{=} \PY{l+m+mf}{0.4}
+\PY{n}{nfn\PYZus{}problema\PYZus{}3} \PY{o}{=} \PY{n}{NFN}\PY{p}{(}\PY{n}{n\PYZus{}epoca}\PY{p}{,} \PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{m}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{,} \PY{n}{alfa}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Demonstração de estado inicial
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}3}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_86_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  0.9538
+Mean absolute percentage error (MAPE): 86086.7083\%
+    \end{Verbatim}
+
+    Demonstração de treinamento
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}3}\PY{o}{.}\PY{n}{treinar\PYZus{}gradiente}\PY{p}{(}\PY{n}{plota\PYZus{}resultado\PYZus{}epocas}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_88_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_88_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Demonstração de resultado final
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}3}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_90_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  0.0061
+Mean absolute percentage error (MAPE): 107.0212\%
+    \end{Verbatim}
+
+    Resultado médio para 10 treinos
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}3}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao\PYZus{}multiplos\PYZus{}treinos}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_92_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do RMSE:  0.0072
+Desvio padrão do RMSE:  0.0008
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_92_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do MAPE: 353.4722\%
+Desvio padrão do MAPE: 154.0003\%
+    \end{Verbatim}
+
+    \hypertarget{problema-4-exemplo-4-do-livro-texto-previsuxe3o-de-suxe9ries-temporais}{%
+\subsection{Problema 4: Exemplo 4 do livro texto (previsão de séries
+temporais)}\label{problema-4-exemplo-4-do-livro-texto-previsuxe3o-de-suxe9ries-temporais}}
+
+Este problema é o exemplo 4 do capítulo 12 do livro texto da disciplina.
+Esse consiste em aproximação de uma série temporal caótica descrita pela
+seguinte função:
+
+\(\dot{x} = \frac{0.2x(t - \tau)}{1+x^{10}(t-\tau)} - 0.1x(t)\)
+
+As entradas desse problema são variáveis x(t), x(t-6), x(t-12) e x(t-18)
+e saída x(t+6).
+
+\([x(t-18), x(t-12), x(t-6), x(t); x(t+6)]\)
+
+utilizar os arquivos disponibilizados.
+
+\hypertarget{criauxe7uxe3o-dos-arquivos-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Criação dos arquivos de treino e
+validação}\label{criauxe7uxe3o-dos-arquivos-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{problema\PYZus{}4\PYZus{}criar\PYZus{}arquivos}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n}{dados\PYZus{}mg} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{mgdata.dat.txt}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{header}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{names}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{indice}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{valor}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+
+    \PY{n}{x1} \PY{o}{=} \PY{n}{atrasar}\PY{p}{(}\PY{n}{dados\PYZus{}mg}\PY{o}{.}\PY{n}{valor}\PY{p}{,} \PY{l+m+mi}{18}\PY{p}{)}
+    \PY{n}{x2} \PY{o}{=} \PY{n}{atrasar}\PY{p}{(}\PY{n}{dados\PYZus{}mg}\PY{o}{.}\PY{n}{valor}\PY{p}{,} \PY{l+m+mi}{12}\PY{p}{)}
+    \PY{n}{x3} \PY{o}{=} \PY{n}{atrasar}\PY{p}{(}\PY{n}{dados\PYZus{}mg}\PY{o}{.}\PY{n}{valor}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}
+    \PY{n}{x4} \PY{o}{=} \PY{n}{atrasar}\PY{p}{(}\PY{n}{dados\PYZus{}mg}\PY{o}{.}\PY{n}{valor}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+    \PY{n}{y} \PY{o}{=} \PY{n}{avancar}\PY{p}{(}\PY{n}{dados\PYZus{}mg}\PY{o}{.}\PY{n}{valor}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}
+
+    \PY{n}{x1} \PY{o}{=} \PY{n}{ajustar}\PY{p}{(}\PY{n}{x1}\PY{p}{,} \PY{l+m+mi}{18}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}
+    \PY{n}{x2} \PY{o}{=} \PY{n}{ajustar}\PY{p}{(}\PY{n}{x2}\PY{p}{,} \PY{l+m+mi}{18}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}
+    \PY{n}{x3} \PY{o}{=} \PY{n}{ajustar}\PY{p}{(}\PY{n}{x3}\PY{p}{,} \PY{l+m+mi}{18}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}
+    \PY{n}{x4} \PY{o}{=} \PY{n}{ajustar}\PY{p}{(}\PY{n}{x4}\PY{p}{,} \PY{l+m+mi}{18}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}
+    \PY{n}{y} \PY{o}{=} \PY{n}{ajustar}\PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{l+m+mi}{18}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}
+
+    \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{n}{x1}\PY{p}{,} \PY{n}{x2}\PY{p}{,} \PY{n}{x3}\PY{p}{,} \PY{n}{x4}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{T}
+
+    \PY{n}{limite\PYZus{}amostra\PYZus{}treino} \PY{o}{=} \PY{l+m+mi}{301}
+
+    \PY{n}{xt} \PY{o}{=} \PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{n}{limite\PYZus{}amostra\PYZus{}treino}\PY{p}{]}
+    \PY{n}{ydt} \PY{o}{=} \PY{n}{y}\PY{p}{[}\PY{p}{:}\PY{n}{limite\PYZus{}amostra\PYZus{}treino}\PY{p}{]}
+    \PY{n}{xt}\PY{p}{,} \PY{n}{ydt} \PY{o}{=} \PY{n}{embaralhar\PYZus{}dados}\PY{p}{(}\PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{)}
+
+    \PY{n}{xv} \PY{o}{=} \PY{n}{x}\PY{p}{[}\PY{n}{limite\PYZus{}amostra\PYZus{}treino}\PY{p}{:}\PY{p}{]}
+    \PY{n}{ydv} \PY{o}{=} \PY{n}{y}\PY{p}{[}\PY{n}{limite\PYZus{}amostra\PYZus{}treino}\PY{p}{:}\PY{p}{]}
+
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xte4.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{xt}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydte4.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ydt}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xve4.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{xv}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydve4.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ydv}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{carregamento-dos-dados-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Carregamento dos dados de treino e
+validação}\label{carregamento-dos-dados-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{xt} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xte4.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{values}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{ydt} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydte4.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{xv} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xve4.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{values}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{ydv} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydve4.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{resultado-desejado}{%
+\subsubsection{Resultado desejado}\label{resultado-desejado}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{label\PYZus{}y\PYZus{}validacao} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Série Mackey\PYZhy{}Glass}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{exibir\PYZus{}resultado\PYZus{}desejado}\PY{p}{(}\PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_98_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{resumo-dos-dados-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Resumo dos dados de treino e
+validação}\label{resumo-dos-dados-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{descrever\PYZus{}dados}\PY{p}{(}\PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+===Dataset xt===
+            0         1         2         3
+0    0.219220  0.655619  0.790330  0.675245
+1    0.853817  0.565929  0.425606  0.741983
+2    1.313696  1.084148  0.748416  0.492962
+3    0.991405  1.143858  1.125572  1.121762
+4    1.162239  1.041191  0.961373  0.735436
+..        {\ldots}       {\ldots}       {\ldots}       {\ldots}
+295  1.004313  0.776007  0.652640  0.697366
+296  0.741983  0.971732  0.938761  1.064101
+297  0.586417  0.937260  0.967452  0.991405
+298  1.200000  0.658574  0.361433  0.246463
+299  1.125572  1.121762  0.869387  0.711727
+
+[300 rows x 4 columns]
+
+===Dataset yt===
+            0
+0    0.830922
+1    0.971732
+2    0.474057
+3    0.869387
+4    0.725485
+..        {\ldots}
+295  1.014423
+296  1.136291
+297  1.143858
+298  0.710732
+299  0.621204
+
+[300 rows x 1 columns]
+
+===Dataset xv===
+            0         1         2         3
+0    0.942809  1.123405  1.131148  1.162401
+1    0.959995  1.137060  1.132844  1.156239
+2    0.988265  1.141552  1.137804  1.138207
+3    1.024910  1.140181  1.145212  1.107121
+4    1.064101  1.136291  1.153459  1.065472
+..        {\ldots}       {\ldots}       {\ldots}       {\ldots}
+870  0.951945  0.648978  0.447014  0.618967
+871  0.894917  0.606960  0.435496  0.693236
+872  0.840268  0.567048  0.436993  0.764479
+873  0.788392  0.529843  0.455290  0.827557
+874  0.739373  0.496407  0.493052  0.880008
+
+[875 rows x 4 columns]
+
+===Dataset yv===
+            0
+0    0.969583
+1    0.923356
+2    0.881269
+3    0.844032
+4    0.811458
+..        {\ldots}
+870  0.951448
+871  0.971623
+872  0.982832
+873  0.986405
+874  0.983860
+
+[875 rows x 1 columns]
+    \end{Verbatim}
+
+    \hypertarget{estruturas-implementadas}{%
+\subsubsection{Estruturas
+implementadas}\label{estruturas-implementadas}}
+
+    \hypertarget{paruxe2metros-gerais}{%
+\paragraph{Parâmetros gerais}\label{paruxe2metros-gerais}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{n\PYZus{}epoca} \PY{o}{=} \PY{l+m+mi}{20}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{estrutura-anfis}{%
+\paragraph{Estrutura ANFIS}\label{estrutura-anfis}}
+
+Parâmetros
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m} \PY{o}{=} \PY{l+m+mi}{8}
+\PY{n}{alfa} \PY{o}{=} \PY{l+m+mf}{0.01}
+\PY{n}{anfis\PYZus{}problema\PYZus{}4} \PY{o}{=} \PY{n}{ANFIS}\PY{p}{(}\PY{n}{n\PYZus{}epoca}\PY{p}{,} \PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{m}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{,} \PY{n}{alfa}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Demonstração de estado inicial
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}4}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_107_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  1.1197
+Mean absolute percentage error (MAPE): 132.0622\%
+    \end{Verbatim}
+
+    Demonstração de treinamento
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{52}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}4}\PY{o}{.}\PY{n}{treinar\PYZus{}gradiente}\PY{p}{(}\PY{n}{plota\PYZus{}resultado\PYZus{}epocas}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_109_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_109_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Demonstração de resultado final
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}4}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_111_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  0.0413
+Mean absolute percentage error (MAPE): 4.0194\%
+    \end{Verbatim}
+
+    Resultado médio para 10 treinos
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}4}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao\PYZus{}multiplos\PYZus{}treinos}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_113_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do RMSE:  0.0407
+Desvio padrão do RMSE:  0.0137
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_113_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do MAPE: 3.5082\%
+Desvio padrão do MAPE: 1.0719\%
+    \end{Verbatim}
+
+    \hypertarget{estrutura-nfn}{%
+\subsubsection{Estrutura NFN}\label{estrutura-nfn}}
+
+Parâmetros
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{55}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m} \PY{o}{=} \PY{l+m+mi}{8}
+\PY{n}{alfa} \PY{o}{=} \PY{l+m+mf}{0.3}
+\PY{n}{nfn\PYZus{}problema\PYZus{}4} \PY{o}{=} \PY{n}{NFN}\PY{p}{(}\PY{n}{n\PYZus{}epoca}\PY{p}{,} \PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{m}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{,} \PY{n}{alfa}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Demonstração de estado inicial
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{56}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}4}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_117_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  2.3286
+Mean absolute percentage error (MAPE): 272.6307\%
+    \end{Verbatim}
+
+    Demonstração de treinamento
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}4}\PY{o}{.}\PY{n}{treinar\PYZus{}gradiente}\PY{p}{(}\PY{n}{plota\PYZus{}resultado\PYZus{}epocas}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_119_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_119_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Demonstração de resultado final
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{58}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}4}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_121_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  0.0159
+Mean absolute percentage error (MAPE): 1.3533\%
+    \end{Verbatim}
+
+    Resultado médio para 10 treinos
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{59}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}4}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao\PYZus{}multiplos\PYZus{}treinos}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_123_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do RMSE:  0.0168
+Desvio padrão do RMSE:  0.001
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_123_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do MAPE: 1.4468\%
+Desvio padrão do MAPE: 0.1101\%
+    \end{Verbatim}
+
+    \hypertarget{problema-5-escolha-um-problema-de-regressuxe3o-no-reposituxf3rio-httpsarchive.ics.uci.edumldatasets}{%
+\subsection{Problema 5: Escolha um problema de regressão no repositório:
+https://archive.ics.uci.edu/ml/datasets}\label{problema-5-escolha-um-problema-de-regressuxe3o-no-reposituxf3rio-httpsarchive.ics.uci.edumldatasets}}
+
+Problema escolhido: Metro Interstate Traffic Volume Data Set
+(https://archive.ics.uci.edu/ml/datasets/Metro+Interstate+Traffic+Volume)
+
+O objetivo proposto neste problema é prever com 24 horas de antecedência
+o número de pessoas que vão deslocar entre duas estações de metrô de
+Minneapolis (EUA).
+
+Para isso a seguinte fórmula para previsão de série temporal foi
+experimentada:
+
+\(y(k+24) = g[y(k),y(k-24),y(k-144)]\),
+
+onde \(x_{1}\) representa o volume passageiros registrado na hora atual,
+\(x_{2}\) representa o volume de passageiros um dia atrás e \(x_{3}\)
+representa o volume de passageiros uma semana antes da data que se
+pretende prever.
+
+\hypertarget{data-set}{%
+\subsubsection{Data set}\label{data-set}}
+
+A base de dados é composta pelo volume de tráfego por hora entre 2
+estações de metrô de Minneapolis. Os dados correspondem ao período de
+2012 até 2018.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{dados\PYZus{}metro} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Metro\PYZus{}Interstate\PYZus{}Traffic\PYZus{}Volume.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{,}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{gca}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{xaxis}\PY{o}{.}\PY{n}{set\PYZus{}major\PYZus{}locator}\PY{p}{(}\PY{n}{mdates}\PY{o}{.}\PY{n}{DayLocator}\PY{p}{(}\PY{n}{interval}\PY{o}{=}\PY{l+m+mi}{168}\PY{p}{)}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{dados\PYZus{}metro}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{720}\PY{p}{]}\PY{o}{.}\PY{n}{date\PYZus{}time}\PY{p}{,} \PY{n}{dados\PYZus{}metro}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{720}\PY{p}{]}\PY{o}{.}\PY{n}{traffic\PYZus{}volume}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsh{} passageiros por hora}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{gcf}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{autofmt\PYZus{}xdate}\PY{p}{(}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZsh{} passageiros}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Volume de tráfego por hora entre 2 estações de metrô de Minneapolis: primeiros 30 dias da base de dados}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_125_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{criauxe7uxe3o-dos-arquivos-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Criação dos arquivos de treino e
+validação}\label{criauxe7uxe3o-dos-arquivos-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{problema\PYZus{}5\PYZus{}criar\PYZus{}arquivos}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n}{dados\PYZus{}metro} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Metro\PYZus{}Interstate\PYZus{}Traffic\PYZus{}Volume.csv}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{sep}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{,}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+    \PY{n}{x1} \PY{o}{=} \PY{n}{atrasar}\PY{p}{(}\PY{n}{dados\PYZus{}metro}\PY{o}{.}\PY{n}{traffic\PYZus{}volume}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}
+    \PY{n}{x2} \PY{o}{=} \PY{n}{atrasar}\PY{p}{(}\PY{n}{dados\PYZus{}metro}\PY{o}{.}\PY{n}{traffic\PYZus{}volume}\PY{p}{,} \PY{l+m+mi}{24}\PY{p}{)}
+    \PY{n}{x3} \PY{o}{=} \PY{n}{atrasar}\PY{p}{(}\PY{n}{dados\PYZus{}metro}\PY{o}{.}\PY{n}{traffic\PYZus{}volume}\PY{p}{,} \PY{l+m+mi}{144}\PY{p}{)}
+    \PY{n}{y} \PY{o}{=} \PY{n}{avancar}\PY{p}{(}\PY{n}{dados\PYZus{}metro}\PY{o}{.}\PY{n}{traffic\PYZus{}volume}\PY{p}{,} \PY{l+m+mi}{24}\PY{p}{)}
+
+    \PY{n}{x1} \PY{o}{=} \PY{n}{ajustar}\PY{p}{(}\PY{n}{x1}\PY{p}{,} \PY{l+m+mi}{144}\PY{p}{,} \PY{l+m+mi}{24}\PY{p}{)}
+    \PY{n}{x2} \PY{o}{=} \PY{n}{ajustar}\PY{p}{(}\PY{n}{x2}\PY{p}{,} \PY{l+m+mi}{144}\PY{p}{,} \PY{l+m+mi}{24}\PY{p}{)}
+    \PY{n}{x3} \PY{o}{=} \PY{n}{ajustar}\PY{p}{(}\PY{n}{x3}\PY{p}{,} \PY{l+m+mi}{144}\PY{p}{,} \PY{l+m+mi}{24}\PY{p}{)}
+    \PY{n}{y} \PY{o}{=} \PY{n}{ajustar}\PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{l+m+mi}{144}\PY{p}{,} \PY{l+m+mi}{24}\PY{p}{)}
+
+    \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{n}{x1}\PY{p}{,} \PY{n}{x2}\PY{p}{,} \PY{n}{x3}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{T}
+
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x5\PYZus{}desnormalizado.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{x}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y5\PYZus{}desnormalizado.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{y}\PY{p}{)}
+
+    \PY{n}{minimo} \PY{o}{=} \PY{n+nb}{min}\PY{p}{(}\PY{n}{x}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n+nb}{min}\PY{p}{(}\PY{n}{y}\PY{p}{)}\PY{p}{)}
+    \PY{n}{maximo} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{x}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n+nb}{max}\PY{p}{(}\PY{n}{y}\PY{p}{)}\PY{p}{)}
+
+    \PY{n}{x\PYZus{}nomalizado} \PY{o}{=} \PY{n}{normalizar}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{minimo}\PY{p}{,} \PY{n}{maximo}\PY{p}{)}
+    \PY{n}{y\PYZus{}normalizado} \PY{o}{=} \PY{n}{normalizar}\PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{n}{minimo}\PY{p}{,} \PY{n}{maximo}\PY{p}{)}
+
+    \PY{n}{tamanho\PYZus{}amostra\PYZus{}treino} \PY{o}{=} \PY{l+m+mi}{24} \PY{o}{*} \PY{l+m+mi}{30} \PY{o}{*} \PY{l+m+mi}{12} \PY{o}{*} \PY{l+m+mi}{4}
+
+    \PY{n}{xt} \PY{o}{=} \PY{n}{x\PYZus{}nomalizado}\PY{p}{[}\PY{p}{:}\PY{n}{tamanho\PYZus{}amostra\PYZus{}treino}\PY{p}{]}
+    \PY{n}{ydt} \PY{o}{=} \PY{n}{y\PYZus{}normalizado}\PY{p}{[}\PY{p}{:}\PY{n}{tamanho\PYZus{}amostra\PYZus{}treino}\PY{p}{]}
+    \PY{n}{xt}\PY{p}{,} \PY{n}{ydt} \PY{o}{=} \PY{n}{embaralhar\PYZus{}dados}\PY{p}{(}\PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xte5.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{xt}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydte5.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ydt}\PY{p}{)}
+
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xte5\PYZus{}desnormalizado.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{desnormalizar}\PY{p}{(}\PY{n}{xt}\PY{p}{,} \PY{n}{minimo}\PY{p}{,} \PY{n}{maximo}\PY{p}{)}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydte5\PYZus{}desnormalizado.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{desnormalizar}\PY{p}{(}\PY{n}{ydt}\PY{p}{,} \PY{n}{minimo}\PY{p}{,} \PY{n}{maximo}\PY{p}{)}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}\PY{p}{)}
+
+    \PY{n}{xv} \PY{o}{=} \PY{n}{x\PYZus{}nomalizado}\PY{p}{[}\PY{n}{tamanho\PYZus{}amostra\PYZus{}treino}\PY{p}{:}\PY{p}{]}
+    \PY{n}{ydv} \PY{o}{=} \PY{n}{y\PYZus{}normalizado}\PY{p}{[}\PY{n}{tamanho\PYZus{}amostra\PYZus{}treino}\PY{p}{:}\PY{p}{]}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xve5.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{xv}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydve5.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{ydv}\PY{p}{)}
+
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xve5\PYZus{}desnormalizado.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{desnormalizar}\PY{p}{(}\PY{n}{xv}\PY{p}{,} \PY{n}{minimo}\PY{p}{,} \PY{n}{maximo}\PY{p}{)}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}\PY{p}{)}
+    \PY{n}{criar\PYZus{}arquivo}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydve5\PYZus{}desnormalizado.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{desnormalizar}\PY{p}{(}\PY{n}{ydv}\PY{p}{,} \PY{n}{minimo}\PY{p}{,} \PY{n}{maximo}\PY{p}{)}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{carregamento-dos-dados-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Carregamento dos dados de treino e
+validação}\label{carregamento-dos-dados-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{62}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{xt} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xte5.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{values}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{ydt} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydte5.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{xv} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{xve5.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{values}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+\PY{n}{ydv} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ydve5.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{tolist}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x5\PYZus{}desnormalizado.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{values}
+\PY{n}{y} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y5\PYZus{}desnormalizado.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{o}{.}\PY{n}{values}
+\PY{n}{minimo} \PY{o}{=} \PY{n+nb}{min}\PY{p}{(}\PY{n}{x}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{y}\PY{o}{.}\PY{n}{min}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\PY{n}{maximo} \PY{o}{=} \PY{n+nb}{max}\PY{p}{(}\PY{n}{x}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{p}{,} \PY{n}{y}\PY{o}{.}\PY{n}{max}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{resultado-desejado}{%
+\subsubsection{Resultado desejado}\label{resultado-desejado}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{63}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{label\PYZus{}y\PYZus{}validacao} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y(k+24) = g[y(k),y(k\PYZhy{}24),y(k\PYZhy{}144)]}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{exibir\PYZus{}resultado\PYZus{}desejado}\PY{p}{(}\PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_131_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{resumo-dos-dados-de-treino-e-validauxe7uxe3o}{%
+\subsubsection{Resumo dos dados de treino e
+validação}\label{resumo-dos-dados-de-treino-e-validauxe7uxe3o}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{64}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{descrever\PYZus{}dados}\PY{p}{(}\PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+
+===Dataset xt===
+              0         1         2
+0      0.905220  0.639286  0.615934
+1      0.409753  0.382967  0.657692
+2      0.482418  0.082692  0.624725
+3      0.718407  0.202198  0.326786
+4      0.684890  0.739835  0.239148
+{\ldots}         {\ldots}       {\ldots}       {\ldots}
+34554  0.101236  0.169093  0.707005
+34555  0.037500  0.221566  0.592995
+34556  0.474451  0.045604  0.102885
+34557  0.047115  0.056319  0.850549
+34558  0.469780  0.347940  0.040247
+
+[34559 rows x 3 columns]
+
+===Dataset yt===
+              0
+0      0.328846
+1      0.359478
+2      0.441621
+3      0.108654
+4      0.320604
+{\ldots}         {\ldots}
+34554  0.745055
+34555  0.779945
+34556  0.657967
+34557  0.048214
+34558  0.436538
+
+[34559 rows x 1 columns]
+
+===Dataset xv===
+              0         1         2
+0      0.809066  0.778159  0.802747
+1      0.903709  0.826786  0.623901
+2      0.830632  0.691346  0.486401
+3      0.685027  0.691346  0.472390
+4      0.611264  0.607692  0.454945
+{\ldots}         {\ldots}       {\ldots}       {\ldots}
+13470  0.405220  0.372665  0.597665
+13471  0.358104  0.486813  0.613736
+13472  0.529670  0.238049  0.622390
+13473  0.250824  0.119093  0.608929
+13474  0.126374  0.071978  0.661538
+
+[13475 rows x 3 columns]
+
+===Dataset yv===
+              0
+0      0.395604
+1      0.767170
+2      0.826648
+3      0.826648
+4      0.830220
+{\ldots}         {\ldots}
+13470  0.486676
+13471  0.382005
+13472  0.296566
+13473  0.199176
+13474  0.131044
+
+[13475 rows x 1 columns]
+    \end{Verbatim}
+
+    \hypertarget{estruturas-implementadas}{%
+\subsubsection{Estruturas
+implementadas}\label{estruturas-implementadas}}
+
+\hypertarget{paruxe2metros-gerais}{%
+\paragraph{Parâmetros gerais}\label{paruxe2metros-gerais}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{65}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{n\PYZus{}epoca} \PY{o}{=} \PY{l+m+mi}{20}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{estrutura-anfis}{%
+\paragraph{Estrutura ANFIS}\label{estrutura-anfis}}
+
+Parâmetros
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{66}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m} \PY{o}{=} \PY{l+m+mi}{12}
+\PY{n}{alfa} \PY{o}{=} \PY{l+m+mf}{0.1}
+\PY{n}{anfis\PYZus{}problema\PYZus{}5} \PY{o}{=} \PY{n}{ANFIS}\PY{p}{(}\PY{n}{n\PYZus{}epoca}\PY{p}{,} \PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{m}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{,} \PY{n}{alfa}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Demonstração de estado inicial
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{67}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}5}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{k+kc}{True}\PY{p}{,} \PY{n}{minimo}\PY{p}{,} \PY{n}{maximo}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_139_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  3466.6835
+Mean absolute percentage error (MAPE): 330.3883\%
+    \end{Verbatim}
+
+    Demonstração de treinamento
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{68}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}5}\PY{o}{.}\PY{n}{treinar\PYZus{}gradiente}\PY{p}{(}\PY{n}{plota\PYZus{}resultado\PYZus{}epocas}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+                                   \PY{n}{desnormalizar\PYZus{}apresentacao\PYZus{}resultado}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+                                   \PY{n}{minimo\PYZus{}desnomalizacao}\PY{o}{=}\PY{n}{minimo}\PY{p}{,}
+                                   \PY{n}{maximo\PYZus{}desnomalizacao}\PY{o}{=}\PY{n}{maximo}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_141_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_141_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Demonstração de resultado final
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{69}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}5}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{k+kc}{True}\PY{p}{,} \PY{n}{minimo}\PY{p}{,} \PY{n}{maximo}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_143_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  1823.9816
+Mean absolute percentage error (MAPE): 136.2210\%
+    \end{Verbatim}
+
+    Resultado médio para 10 treinos
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{70}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{anfis\PYZus{}problema\PYZus{}5}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao\PYZus{}multiplos\PYZus{}treinos}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{k+kc}{True}\PY{p}{,} \PY{n}{minimo}\PY{p}{,} \PY{n}{maximo}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_145_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do RMSE:  1822.0256
+Desvio padrão do RMSE:  1.4384
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_145_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do MAPE: 136.5400\%
+Desvio padrão do MAPE: 0.3504\%
+    \end{Verbatim}
+
+    \hypertarget{estrutura-nfn}{%
+\subsubsection{Estrutura NFN}\label{estrutura-nfn}}
+
+Parâmetros
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{71}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{m} \PY{o}{=} \PY{l+m+mi}{12}
+\PY{n}{alfa} \PY{o}{=} \PY{l+m+mf}{0.1}
+
+\PY{n}{nfn\PYZus{}problema\PYZus{}5} \PY{o}{=} \PY{n}{NFN}\PY{p}{(}\PY{n}{n\PYZus{}epoca}\PY{p}{,} \PY{n}{xt}\PY{p}{,} \PY{n}{ydt}\PY{p}{,} \PY{n}{xv}\PY{p}{,} \PY{n}{ydv}\PY{p}{,} \PY{n}{m}\PY{p}{,} \PY{n}{label\PYZus{}y\PYZus{}validacao}\PY{p}{,} \PY{n}{alfa}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Demonstração do estado inicial
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{72}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}5}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{k+kc}{True}\PY{p}{,} \PY{n}{minimo}\PY{p}{,} \PY{n}{maximo}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_149_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  8597.779
+Mean absolute percentage error (MAPE): 671.2134\%
+    \end{Verbatim}
+
+    Demonstração de treinamento
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{73}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}5}\PY{o}{.}\PY{n}{treinar\PYZus{}gradiente}\PY{p}{(}\PY{n}{plota\PYZus{}resultado\PYZus{}epocas}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+                                 \PY{n}{desnormalizar\PYZus{}apresentacao\PYZus{}resultado}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+                                 \PY{n}{minimo\PYZus{}desnomalizacao}\PY{o}{=}\PY{n}{minimo}\PY{p}{,}
+                                 \PY{n}{maximo\PYZus{}desnomalizacao}\PY{o}{=}\PY{n}{maximo}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_151_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_151_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    Demonstração de resultado final
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{74}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}5}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao}\PY{p}{(}\PY{k+kc}{True}\PY{p}{,} \PY{n}{minimo}\PY{p}{,} \PY{n}{maximo}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_153_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Root mean squared error (RMSE):  1935.8699
+Mean absolute percentage error (MAPE): 134.6726\%
+    \end{Verbatim}
+
+    Resultado médio para 10 treinos
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{75}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{nfn\PYZus{}problema\PYZus{}5}\PY{o}{.}\PY{n}{exibir\PYZus{}resultado\PYZus{}validacao\PYZus{}multiplos\PYZus{}treinos}\PY{p}{(}\PY{n}{numero\PYZus{}treinos}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{desnormalizar\PYZus{}resultado}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{minimo\PYZus{}desnomalizacao}\PY{o}{=}\PY{n}{minimo}\PY{p}{,} \PY{n}{maximo\PYZus{}desnomalizacao}\PY{o}{=}\PY{n}{maximo}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_155_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do RMSE:  1935.8699
+Desvio padrão do RMSE:  0.0
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{ExercicioComputacionalParte2_files/ExercicioComputacionalParte2_155_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Média do MAPE: 134.6726\%
+Desvio padrão do MAPE: 0.0000\%
+    \end{Verbatim}
+
+    \hypertarget{referuxeancias}{%
+\subsection{Referências}\label{referuxeancias}}
+
+Chiu, Stephen L. ``Fuzzy model identification based on cluster
+estimation.'' Journal of Intelligent \& fuzzy systems 2.3 (1994):
+267-278.
+
+Ghosh, S., and Dubey, S. K. . ``Comparative analysis of k-means and
+fuzzy c-means algorithms.'' International Journal of Advanced Computer
+Science and Applications 4.4 (2013).
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
