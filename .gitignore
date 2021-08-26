@@ -17,3 +17,4 @@ dist
 *.ipynb_checkpoints*
 *_build*
 .idea/
+/trabalho_final/dados/
