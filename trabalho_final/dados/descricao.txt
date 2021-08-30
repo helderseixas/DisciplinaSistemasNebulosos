@@ -15,5 +15,11 @@ https://www.atlasbrasil.org.br/acervo/biblioteca
 Arquivo: todos na pasta covid
 Fonte: Ministério da Saúde https://covid.saude.gov.br/
 
-* Leitos
+* Leitos, médicos, enfermeiros, UTI e respiradores
 http://tabnet.datasus.gov.br/cgi/deftohtm.exe?cnes/cnv/leiintbr.def
+
+* ESF e agentes comunitários de saúde
+https://egestorab.saude.gov.br/paginas/acessoPublico/relatorios/relatoriosPublicos.xhtml
+
+* Pesquisa Nacional de Saúde 2019
+https://www.ibge.gov.br/estatisticas/sociais/saude/9160-pesquisa-nacional-de-saude.html?edicao=29270&t=sobre
